@@ -1,3 +1,4 @@
+"use strict";
 (() => {
   // lib/quintus_scenes.js
   var quintusScenes = function(Quintus) {

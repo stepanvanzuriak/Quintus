@@ -1,3 +1,4 @@
+"use strict";
 (() => {
   // lib/quintus_touch.js
   var quintusTouch = function(Quintus) {

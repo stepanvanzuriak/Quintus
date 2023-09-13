@@ -1,3 +1,4 @@
+"use strict";
 (() => {
   // lib/quintus_tmx.js
   var quintusTMX = function(Quintus) {

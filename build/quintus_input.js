@@ -1,3 +1,4 @@
+"use strict";
 (() => {
   // lib/quintus_input.js
   var quintusInput = function(Quintus) {

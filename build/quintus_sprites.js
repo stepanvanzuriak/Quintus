@@ -1,3 +1,4 @@
+"use strict";
 (() => {
   // lib/quintus_sprites.js
   var quintusSprites = function(Quintus) {

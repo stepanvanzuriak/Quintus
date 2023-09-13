@@ -1,3 +1,4 @@
+"use strict";
 (() => {
   // lib/quintus_audio.js
   var quintusAudio = function(Quintus) {
