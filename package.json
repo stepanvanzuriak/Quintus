@@ -23,11 +23,19 @@
   "devDependencies": {
     "esbuild": "^0.19.2",
     "esbuild-jest": "^0.5.0",
+    "eslint": "^8.49.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-import": "^2.28.1",
     "jest": "^29.7.0",
     "jest-canvas-mock": "^2.5.2",
-    "jest-environment-jsdom": "^29.7.0"
+    "jest-environment-jsdom": "^29.7.0",
+    "prettier": "3.0.3",
+    "serve": "^14.2.1"
   },
   "scripts": {
-    "test": "jest ./tests"
+    "serve-examples": "serve",
+    "test": "jest",
+    "build": "node build.mjs"
   }
 }

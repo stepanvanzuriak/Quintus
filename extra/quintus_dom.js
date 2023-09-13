@@ -1,34 +1,31 @@
-/*global Quintus:false */
-/*global $:false */
-
 Quintus.DOM = function (Q) {
   Q.setupDOM = function (id, options) {
     options = options || {};
-    id = id || 'quintus';
-    Q.el = $(Q._isString(id) ? '#' + id : id);
+    id = id || "quintus";
+    Q.el = $(Q._isString(id) ? `#${id}` : id);
     if (Q.el.length === 0) {
-      Q.el = $('<div>')
-        .attr('id', id)
+      Q.el = $("<div>")
+        .attr("id", id)
         .css({ width: 320, height: 420 })
-        .appendTo('body');
+        .appendTo("body");
     }
     if (options.maximize) {
-      var w = $(window).width();
-      var h = $(window).height();
+      const w = $(window).width();
+      const h = $(window).height();
       Q.el.css({ width: w, height: h });
     }
     Q.wrapper = Q.el
-      .wrap("<div id='" + id + "_container'/>")
+      .wrap(`<div id='${id}_container'/>`)
       .parent()
-      .css({ width: Q.el.width(), height: Q.el.height(), margin: '0 auto' });
-    Q.el.css({ position: 'relative', overflow: 'hidden' });
+      .css({ width: Q.el.width(), height: Q.el.height(), margin: "0 auto" });
+    Q.el.css({ position: "relative", overflow: "hidden" });
     Q.width = Q.el.width();
     Q.height = Q.el.height();
-    setTimeout(function () {
+    setTimeout(() => {
       window.scrollTo(0, 1);
     }, 0);
-    $(window).bind('orientationchange', function () {
-      setTimeout(function () {
+    $(window).bind("orientationchange", () => {
+      setTimeout(() => {
         window.scrollTo(0, 1);
       }, 0);
     });
@@ -38,37 +35,39 @@ Quintus.DOM = function (Q) {
   (function () {
     function translateBuilder(attribute) {
       return function (dom, x, y) {
-        dom.style[attribute] =
-          'translate(' + Math.floor(x) + 'px,' + Math.floor(y) + 'px)';
+        dom.style[attribute] = `translate(${Math.floor(x)}px,${Math.floor(
+          y,
+        )}px)`;
       };
     }
     function translate3DBuilder(attribute) {
       return function (dom, x, y) {
-        dom.style[attribute] =
-          'translate3d(' + Math.floor(x) + 'px,' + Math.floor(y) + 'px,0px)';
+        dom.style[attribute] = `translate3d(${Math.floor(x)}px,${Math.floor(
+          y,
+        )}px,0px)`;
       };
     }
     function scaleBuilder(attribute) {
       return function (dom, scale) {
-        dom.style[attribute + 'Origin'] = '0% 0%';
-        dom.style[attribute] = 'scale(' + scale + ')';
+        dom.style[`${attribute}Origin`] = "0% 0%";
+        dom.style[attribute] = `scale(${scale})`;
       };
     }
     function fallbackTranslate(dom, x, y) {
-      dom.style.left = x + 'px';
-      dom.style.top = y + 'px';
+      dom.style.left = `${x}px`;
+      dom.style.top = `${y}px`;
     }
-    var has3d =
-      'WebKitCSSMatrix' in window && 'm11' in new window.WebKitCSSMatrix();
-    var dummyStyle = $('<div>')[0].style;
-    var transformMethods = [
-      'transform',
-      'webkitTransform',
-      'MozTransform',
-      'msTransform',
+    const has3d =
+      "WebKitCSSMatrix" in window && "m11" in new window.WebKitCSSMatrix();
+    const dummyStyle = $("<div>")[0].style;
+    const transformMethods = [
+      "transform",
+      "webkitTransform",
+      "MozTransform",
+      "msTransform",
     ];
-    for (var i = 0; i < transformMethods.length; i++) {
-      var transformName = transformMethods[i];
+    for (let i = 0; i < transformMethods.length; i++) {
+      const transformName = transformMethods[i];
       if (!Q._isUndefined(dummyStyle[transformName])) {
         if (has3d) {
           Q.positionDOM = translate3DBuilder(transformName);
@@ -86,27 +85,27 @@ Quintus.DOM = function (Q) {
   (function () {
     function transitionBuilder(attribute, prefix) {
       return function (dom, property, sec, easing) {
-        easing = easing || '';
-        if (property === 'transform') {
+        easing = easing || "";
+        if (property === "transform") {
           property = prefix + property;
         }
-        sec = sec || '1s';
-        dom.style[attribute] = property + ' ' + sec + ' ' + easing;
+        sec = sec || "1s";
+        dom.style[attribute] = `${property} ${sec} ${easing}`;
       };
     }
     // Dummy method
     function fallbackTransition() {}
-    var dummyStyle = $('<div>')[0].style;
-    var transitionMethods = [
-      'transition',
-      'webkitTransition',
-      'MozTransition',
-      'msTransition',
+    const dummyStyle = $("<div>")[0].style;
+    const transitionMethods = [
+      "transition",
+      "webkitTransition",
+      "MozTransition",
+      "msTransition",
     ];
-    var prefixNames = ['', '-webkit-', '-moz-', '-ms-'];
-    for (var i = 0; i < transitionMethods.length; i++) {
-      var transitionName = transitionMethods[i];
-      var prefixName = prefixNames[i];
+    const prefixNames = ["", "-webkit-", "-moz-", "-ms-"];
+    for (let i = 0; i < transitionMethods.length; i++) {
+      const transitionName = transitionMethods[i];
+      const prefixName = prefixNames[i];
       if (!Q._isUndefined(dummyStyle[transitionName])) {
         Q.transitionDOM = transitionBuilder(transitionName, prefixName);
         break;
@@ -116,13 +115,13 @@ Quintus.DOM = function (Q) {
   })();
 
   Q.DOMSprite = Q.Sprite.extend({
-    init: function (props) {
+    init(props) {
       this._super(props);
-      this.el = $('<div>').css({
+      this.el = $("<div>").css({
         width: this.p.w,
         height: this.p.h,
         zIndex: this.p.z || 0,
-        position: 'absolute',
+        position: "absolute",
       });
       this.dom = this.el[0];
       this.rp = {};
@@ -130,30 +129,28 @@ Quintus.DOM = function (Q) {
       this.setTransform();
     },
 
-    setImage: function () {
-      var asset;
+    setImage() {
+      let asset;
       if (this.sheet()) {
         asset = Q.asset(this.sheet().asset);
       } else {
         asset = this.asset();
       }
       if (asset) {
-        this.dom.style.backgroundImage = 'url(' + asset.src + ')';
+        this.dom.style.backgroundImage = `url(${asset.src})`;
       }
     },
 
-    setTransform: function () {
-      var p = this.p;
-      var rp = this.rp;
+    setTransform() {
+      const { p } = this;
+      const { rp } = this;
       if (rp.frame !== p.frame) {
         if (p.sheet) {
-          this.dom.style.backgroundPosition =
-            -this.sheet().fx(p.frame) +
-            'px ' +
-            -this.sheet().fy(p.frame) +
-            'px';
+          this.dom.style.backgroundPosition = `${-this.sheet().fx(
+            p.frame,
+          )}px ${-this.sheet().fy(p.frame)}px`;
         } else {
-          this.dom.style.backgroundPosition = '0px 0px';
+          this.dom.style.backgroundPosition = "0px 0px";
         }
         rp.frame = p.frame;
       }
@@ -164,24 +161,24 @@ Quintus.DOM = function (Q) {
       }
     },
 
-    hide: function () {
-      this.dom.style.display = 'none';
+    hide() {
+      this.dom.style.display = "none";
     },
 
-    show: function () {
-      this.dom.style.display = 'block';
+    show() {
+      this.dom.style.display = "block";
     },
 
-    draw: function (ctx) {
-      this.trigger('draw');
+    draw(ctx) {
+      this.trigger("draw");
     },
 
-    step: function (dt) {
-      this.trigger('step', dt);
+    step(dt) {
+      this.trigger("step", dt);
       this.setTransform();
     },
 
-    destroy: function () {
+    destroy() {
       if (this.destroyed) {
         return false;
       }
@@ -192,16 +189,16 @@ Quintus.DOM = function (Q) {
 
   if (Q.Stage) {
     Q.DOMStage = Q.Stage.extend({
-      init: function (scene) {
-        this.el = $('<div>')
+      init(scene) {
+        this.el = $("<div>")
           .css({
             top: 0,
-            position: 'relative',
+            position: "relative",
           })
           .appendTo(Q.el);
         this.dom = this.el[0];
-        this.wrapper = this.el.wrap('<div>').parent().css({
-          position: 'absolute',
+        this.wrapper = this.el.wrap("<div>").parent().css({
+          position: "absolute",
           left: 0,
           top: 0,
         });
@@ -210,24 +207,24 @@ Quintus.DOM = function (Q) {
         this._super(scene);
       },
 
-      insert: function (itm) {
+      insert(itm) {
         if (itm.dom) {
           this.dom.appendChild(itm.dom);
         }
         return this._super(itm);
       },
 
-      destroy: function () {
+      destroy() {
         this.wrapper.remove();
         this._super();
       },
 
-      rescale: function (scale) {
+      rescale(scale) {
         this.scale = scale;
         Q.scaleDOM(this.wrapper_dom, scale);
       },
 
-      centerOn: function (x, y) {
+      centerOn(x, y) {
         this.x = Q.width / 2 / this.scale - x;
         this.y = Q.height / 2 / this.scale - y;
         Q.positionDOM(this.dom, this.x, this.y);
@@ -244,8 +241,8 @@ Quintus.DOM = function (Q) {
 
   Q.DOMTileMap = Q.DOMSprite.extend({
     // Expects a sprite sheet, along with cols and rows properties
-    init: function (props) {
-      var sheet = Q.sheet(props.sheet);
+    init(props) {
+      const sheet = Q.sheet(props.sheet);
       this._super(
         Q._extend(props, {
           w: props.cols * sheet.tilew,
@@ -258,81 +255,82 @@ Quintus.DOM = function (Q) {
       this.domTiles = [];
     },
 
-    setImage: function () {},
+    setImage() {},
 
-    setup: function (tiles, hide) {
+    setup(tiles, hide) {
       this.tiles = tiles;
-      for (var y = 0, height = tiles.length; y < height; y++) {
+      for (let y = 0, height = tiles.length; y < height; y++) {
         this.domTiles.push([]);
         this.shown.push([]);
-        for (var x = 0, width = tiles[0].length; x < width; x++) {
-          var domTile = this._addTile(tiles[y][x]);
+        for (let x = 0, width = tiles[0].length; x < width; x++) {
+          const domTile = this._addTile(tiles[y][x]);
           if (hide) {
-            domTile.style.visibility = 'hidden';
+            domTile.style.visibility = "hidden";
           }
-          this.shown.push(hide ? false : true);
+          this.shown.push(!hide);
           this.domTiles[y].push(domTile);
         }
       }
     },
 
-    _addTile: function (frame) {
-      var p = this.p;
-      var div = document.createElement('div');
-      div.style.width = p.tilew + 'px';
-      div.style.height = p.tileh + 'px';
-      div.style.styleFloat = div.style.cssFloat = 'left';
+    _addTile(frame) {
+      const { p } = this;
+      const div = document.createElement("div");
+      div.style.width = `${p.tilew}px`;
+      div.style.height = `${p.tileh}px`;
+      div.style.styleFloat = div.style.cssFloat = "left";
       this._setTile(div, frame);
       this.dom.appendChild(div);
       return div;
     },
 
-    _setTile: function (dom, frame) {
-      var asset = Q.asset(this.sheet().asset);
-      dom.style.backgroundImage = 'url(' + asset.src + ')';
-      dom.style.backgroundPosition =
-        -this.sheet().fx(frame) + 'px ' + -this.sheet().fy(frame) + 'px';
+    _setTile(dom, frame) {
+      const asset = Q.asset(this.sheet().asset);
+      dom.style.backgroundImage = `url(${asset.src})`;
+      dom.style.backgroundPosition = `${-this.sheet().fx(
+        frame,
+      )}px ${-this.sheet().fy(frame)}px`;
     },
 
-    validTile: function (x, y) {
+    validTile(x, y) {
       return y >= 0 && y < this.p.rows && x >= 0 && x < this.p.cols;
     },
 
-    get: function (x, y) {
+    get(x, y) {
       return this.validTile(x, y) ? this.tiles[y][x] : null;
     },
 
-    getDom: function (x, y) {
+    getDom(x, y) {
       return this.validTile(x, y) ? this.domTiles[y][x] : null;
     },
-    set: function (x, y, frame) {
+    set(x, y, frame) {
       if (!this.validTile(x, y)) {
         return;
       }
       this.tiles[y][x] = frame;
-      var domTile = this.getDom(x, y);
+      const domTile = this.getDom(x, y);
       this._setFile(domTile, frame);
     },
 
-    show: function (x, y) {
+    show(x, y) {
       if (!this.validTile(x, y)) {
         return;
       }
       if (this.shown[y][x]) {
         return;
       }
-      this.getDom(x, y).style.visibility = 'visible';
+      this.getDom(x, y).style.visibility = "visible";
       this.shown[y][x] = true;
     },
 
-    hide: function (x, y) {
+    hide(x, y) {
       if (!this.validTile(x, y)) {
         return;
       }
       if (!this.shown[y][x]) {
         return;
       }
-      this.getDom(x, y).style.visibility = 'hidden';
+      this.getDom(x, y).style.visibility = "hidden";
       this.shown[y][x] = false;
     },
   });

@@ -1,55 +1,52 @@
-/*global Quintus:false */
-/*global $:false */
-
 Quintus.SVG = function (Q) {
-  var SVG_NS = 'http://www.w3.org/2000/svg';
+  const SVG_NS = "http://www.w3.org/2000/svg";
   Q.setupSVG = function (id, options) {
     options = options || {};
-    id = id || 'quintus';
+    id = id || "quintus";
     Q.svg = Q._isString(id) ? document.getElementById(id) : id;
 
     if (!Q.svg) {
-      Q.svg = document.createElementNS(SVG_NS, 'svg');
-      Q.svg.setAttribute('width', 320);
-      Q.svg.setAttribute('height', 420);
+      Q.svg = document.createElementNS(SVG_NS, "svg");
+      Q.svg.setAttribute("width", 320);
+      Q.svg.setAttribute("height", 420);
       document.body.appendChild(Q.svg);
     }
 
     if (options.maximize) {
-      var w = window.innerWidth - 1;
-      var h = window.innerHeight - 10;
-      Q.svg.setAttribute('width', w);
-      Q.svg.setAttribute('height', h);
+      const w = window.innerWidth - 1;
+      const h = window.innerHeight - 10;
+      Q.svg.setAttribute("width", w);
+      Q.svg.setAttribute("height", h);
     }
-    Q.width = Q.svg.getAttribute('width');
-    Q.height = Q.svg.getAttribute('height');
-    var parent = Q.svg.parentNode;
-    var container = document.createElement('div');
-    container.setAttribute('id', id + '_container');
+    Q.width = Q.svg.getAttribute("width");
+    Q.height = Q.svg.getAttribute("height");
+    const parent = Q.svg.parentNode;
+    const container = document.createElement("div");
+    container.setAttribute("id", `${id}_container`);
     container.style.width = Q.width;
     container.style.height = Q.height;
-    container.style.margin = '0 auto';
+    container.style.margin = "0 auto";
     container.appendChild(Q.svg);
     parent.appendChild(container);
     Q.wrapper = container;
 
-    setTimeout(function () {
+    setTimeout(() => {
       window.scrollTo(0, 1);
     }, 0);
-    window.addEventListener('orientationchange', function () {
-      setTimeout(function () {
+    window.addEventListener("orientationchange", () => {
+      setTimeout(() => {
         window.scrollTo(0, 1);
       }, 0);
     });
     return Q;
   };
 
-  Q.Sprite.extend('SVGSprite', {
-    init: function (props) {
+  Q.Sprite.extend("SVGSprite", {
+    init(props) {
       this._super(
         Q._defaults(props, {
-          shape: 'block',
-          color: 'black',
+          shape: "block",
+          color: "black",
           angle: 0,
           active: true,
           cx: 0,
@@ -62,7 +59,7 @@ Quintus.SVG = function (Q) {
       this.setTransform();
     },
 
-    set: function (attr) {
+    set(attr) {
       Q._each(
         attr,
         function (value, key) {
@@ -72,23 +69,21 @@ Quintus.SVG = function (Q) {
       );
     },
 
-    createShape: function () {
-      var p = this.p;
+    createShape() {
+      const { p } = this;
       switch (p.shape) {
-        case 'block':
-          this.svg = document.createElementNS(SVG_NS, 'rect');
+        case "block":
+          this.svg = document.createElementNS(SVG_NS, "rect");
           Q._extend(p, { cx: p.w / 2, cy: p.h / 2 });
           this.set({ width: p.w, height: p.h });
           break;
-        case 'circle':
-          this.svg = document.createElementNS(SVG_NS, 'circle');
+        case "circle":
+          this.svg = document.createElementNS(SVG_NS, "circle");
           this.set({ r: p.r, cx: 0, cy: 0 });
           break;
-        case 'polygon':
-          this.svg = document.createElementNS(SVG_NS, 'polygon');
-          var pts = Q._map(p.points, function (pt) {
-            return pt[0] + ',' + pt[1];
-          }).join(' ');
+        case "polygon":
+          this.svg = document.createElementNS(SVG_NS, "polygon");
+          var pts = Q._map(p.points, (pt) => `${pt[0]},${pt[1]}`).join(" ");
           this.set({ points: pts });
           break;
       }
@@ -96,77 +91,67 @@ Quintus.SVG = function (Q) {
       if (p.outline) {
         this.set({
           stroke: p.outline,
-          'stroke-width': p.outlineWidth || 1,
+          "stroke-width": p.outlineWidth || 1,
         });
       }
     },
 
-    setTransform: function () {
-      var p = this.p;
-      var rp = this.rp;
+    setTransform() {
+      const { p } = this;
+      const { rp } = this;
       if (rp.x !== p.x || rp.y !== p.y || rp.angle !== p.angle) {
-        var transform =
-          'translate(' +
-          (p.x - p.cx) +
-          ',' +
-          (p.y - p.cy) +
-          ') ' +
-          'rotate(' +
-          p.angle +
-          ',' +
-          p.cx +
-          ',' +
-          p.cy +
-          ')';
-        this.svg.setAttribute('transform', transform);
+        const transform =
+          `translate(${p.x - p.cx},${p.y - p.cy}) ` +
+          `rotate(${p.angle},${p.cx},${p.cy})`;
+        this.svg.setAttribute("transform", transform);
         rp.angle = p.angle;
         rp.x = p.x;
         rp.y = p.y;
       }
     },
-    render: function (ctx) {
-      this.trigger('predraw', ctx);
-      this.trigger('beforedraw', ctx);
+    render(ctx) {
+      this.trigger("predraw", ctx);
+      this.trigger("beforedraw", ctx);
       this.draw(ctx);
-      this.trigger('beforedraw', ctx);
+      this.trigger("beforedraw", ctx);
     },
-    draw: function (ctx) {},
+    draw(ctx) {},
 
-    step: function (dt) {
-      this.trigger('step', dt);
+    step(dt) {
+      this.trigger("step", dt);
       this.setTransform();
     },
   });
 
-  Q.Stage.extend('SVGStage', {
-    init: function (scene) {
-      this.svg = document.createElementNS(SVG_NS, 'svg');
-      this.svg.setAttribute('width', Q.width);
-      this.svg.setAttribute('height', Q.height);
+  Q.Stage.extend("SVGStage", {
+    init(scene) {
+      this.svg = document.createElementNS(SVG_NS, "svg");
+      this.svg.setAttribute("width", Q.width);
+      this.svg.setAttribute("height", Q.height);
       Q.svg.appendChild(this.svg);
 
       this.viewBox = { x: 0, y: 0, w: Q.width, h: Q.height };
       this._super(scene);
     },
-    remove: function (itm) {
+    remove(itm) {
       if (itm.svg) {
         this.svg.removeChild(itm.svg);
       }
       return this._super(itm);
     },
-    insert: function (itm) {
+    insert(itm) {
       if (itm.svg) {
         this.svg.appendChild(itm.svg);
       }
       return this._super(itm);
     },
 
-    destroy: function () {
+    destroy() {
       Q.svg.removeChild(this.svg);
       this._super();
     },
 
-    viewport: function (w, h) {
+    viewport(w, h) {
       this.viewBox.w = w;
       this.viewBox.h = h;
       if (this.viewBox.cx || this.viewBox.cy) {
@@ -176,7 +161,7 @@ Quintus.SVG = function (Q) {
       }
     },
 
-    centerOn: function (x, y) {
+    centerOn(x, y) {
       this.viewBox.cx = x;
       this.viewBox.cy = y;
       this.viewBox.x = x - this.viewBox.w / 2;
@@ -184,22 +169,16 @@ Quintus.SVG = function (Q) {
       this.setViewBox();
     },
 
-    setViewBox: function () {
+    setViewBox() {
       this.svg.setAttribute(
-        'viewBox',
-        this.viewBox.x +
-          ' ' +
-          this.viewBox.y +
-          ' ' +
-          this.viewBox.w +
-          ' ' +
-          this.viewBox.h,
+        "viewBox",
+        `${this.viewBox.x} ${this.viewBox.y} ${this.viewBox.w} ${this.viewBox.h}`,
       );
     },
 
-    browserToWorld: function (x, y) {
-      var m = this.svg.getScreenCTM();
-      var p = this.svg.createSVGPoint();
+    browserToWorld(x, y) {
+      const m = this.svg.getScreenCTM();
+      const p = this.svg.createSVGPoint();
       p.x = x;
       p.y = y;
       return p.matrixTransform(m.inverse());
